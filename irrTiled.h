@@ -1,29 +1,30 @@
-/*********************************************************************
-Copyright (c) 2020-2022 TheMrCerebro
-themrcerebro@gmail.com
-
-irrTiled - Zlib license.
-
-This software is provided 'as-is', without any express or
-implied warranty. In no event will the authors be held
-liable for any damages arising from the use of this software.
-
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute
-it freely, subject to the following restrictions:
-
-1. The origin of this software must not be misrepresented;
-you must not claim that you wrote the original software.
-If you use this software in a product, an acknowledgment
-in the product documentation would be appreciated but
-is not required.
-
-2. Altered source versions must be plainly marked as such,
-and must not be misrepresented as being the original software.
-
-3. This notice may not be removed or altered from any
-source distribution.
-*********************************************************************/
+/*
+ *
+ * Copyright (c) 2020-2022 TheMrCerebro
+ *
+ * irrTiled - Zlib license.
+ *
+ * This software is provided 'as-is', without any express or
+ * implied warranty. In no event will the authors be held
+ * liable for any damages arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute
+ * it freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented;
+ * you must not claim that you wrote the original software.
+ * If you use this software in a product, an acknowledgment
+ * in the product documentation would be appreciated but
+ * is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such,
+ * and must not be misrepresented as being the original software.
+ *
+ * 3. This notice may not be removed or altered from any
+ * source distribution.
+ *
+*/
 
 #ifndef IRRTILED_H_INCLUDED
 #define IRRTILED_H_INCLUDED
@@ -36,96 +37,107 @@ using namespace video;
 using namespace scene;
 using namespace io;
 
-enum SHAPE {
+enum SHAPE
+{
 	S_RECT,
 	S_ELLIPSE,
 	S_POINT,
 	S_POLYGON
 };
 
-struct PROPERTY {
+struct PROPERTY
+{
 	bool BoolValue;
 	s32 IntValue;
 	s32 ObjectValue;
 	f32 FloatValue;
-	stringc Name;
-	stringc Type;
-	stringc FileValue;
-	stringc StringValue;
-	SColor ColorValue;
+	core::stringc Name;
+	core::stringc Type;
+	core::stringc FileValue;
+	core::stringc StringValue;
+	video::SColor ColorValue;
 };
 
-struct IMAGE {
-	dimension2du Size;
-	stringc Source;
-	ITexture* Texture;
+struct IMAGE
+{
+	core::dimension2du Size;
+	core::stringc Source;
+	video::ITexture* Texture;
 };
 
-struct FRAME {
+struct FRAME
+{
 	s32 TileID;
 	s32 Duration;
 };
 
-struct OBJECT {
+struct OBJECT
+{
 	s32 ID;
 	s32 GID;
-	position2di Pos;
+	core::position2di Pos;
 	s32 Rotation;
-	dimension2du Size;
-	array<PROPERTY> Properties;
+	core::dimension2du Size;
+	core::array<PROPERTY> Properties;
 	SHAPE Shape;
-	array<vector2di> Points;
+	core::array<core::vector2di> Points;
 };
 
-struct OBJECTGROUP {
+struct OBJECTGROUP
+{
 	bool Visible;
 	s32 ID;
-	stringc Name;
-	SColor TintColor;
-	array<OBJECT> Object;
-	array<PROPERTY> Properties;
+	core::stringc Name;
+	video::SColor TintColor;
+	core::array<OBJECT> Object;
+	core::array<PROPERTY> Properties;
 };
 
-struct TILE {
+struct TILE
+{
 	s32 ID;
-	array<FRAME> Animation;
-	array<OBJECTGROUP> ObjectGroup;
+	core::array<FRAME> Animation;
+	core::array<OBJECTGROUP> ObjectGroup;
 };
 
-struct TILESET {
+struct TILESET
+{
 	s32 FirstGID;
-	dimension2du Size;
+	core::dimension2du Size;
 	s32 TileCount;
-	s32 Columns;
-	stringc Source;
-	stringc Name;
+	u32 Columns;
+	core::stringc Source;
+	core::stringc Name;
 	IMAGE Image;
-	array<recti> SubRects;
-	array<TILE> Tile;
+	core::array<recti> SubRects;
+	core::array<TILE> Tile;
 };
 
-struct LAYER {
+struct LAYER
+{
 	bool Visible;
 	s32 ID;
-	dimension2du Size;
-	stringc Name;
-	stringc Encoding;
-	SColor TintColor;
-	array<s32> Data;
-	array<PROPERTY> Properties;
+	core::dimension2du Size;
+	core::stringc Name;
+	core::stringc Encoding;
+	video::SColor TintColor;
+	core::array<s32> Data;
+	core::array<PROPERTY> Properties;
 };
 
-struct GROUP {
+struct GROUP
+{
 	s32 ID;
-	stringc Name;
-	array<PROPERTY> Properties;
+	core::stringc Name;
+	core::array<PROPERTY> Properties;
 };
 
-struct IMAGELAYER {
+struct IMAGELAYER
+{
 	s32 ID;
-	stringc Name;
+	core::stringc Name;
 	bool Visible;
-	SColor TintColor;
+	video::SColor TintColor;
 };
 
 //
@@ -136,11 +148,11 @@ public:
 	// Constructor
 	irrTiled(const c8* filename, IrrlichtDevice* device)
 	{
-		IXMLReader* xml = device->getFileSystem()->createXMLReader(filename);
+		io::IXMLReader* xml = device->getFileSystem()->createXMLReader(filename);
 
 		// Extrae el nombre del directorio donde esta el archivo tmx
-		for (s32 i = 0; i < stringc(filename).findFirst('/')+1; ++i)
-			directory += stringc(filename)[i];
+		for (s32 i=0; i<core::stringc(filename).findFirst('/')+1; ++i)
+			directory += core::stringc(filename)[i];
 
 		dev = device;
 
@@ -152,7 +164,7 @@ public:
 			if (xml->getNodeType() == io::EXN_ELEMENT)
 			{
 				// Read Maps information
-				if (stringc(xml->getNodeName()) == "map")
+				if (core::stringc(xml->getNodeName()) == "map")
 				{
 					//read in the key
 					Version = xml->getAttributeValue(L"version");
@@ -189,11 +201,11 @@ public:
 				}
 
 				// Read all Properties of map
-				if (stringc(xml->getNodeName()) == "properties")
+				if (core::stringc(xml->getNodeName()) == "properties")
 					Properties = readProperties(xml);
 
 				// Read Tileset information
-				if (stringc(xml->getNodeName()) == "tileset")
+				if (core::stringc(xml->getNodeName()) == "tileset")
 				{
 					TILESET ts;
 
@@ -203,13 +215,13 @@ public:
 					ts.Source = xml->getAttributeValue(L"source");
 					if (!ts.Source.empty())
 					{
-						IXMLReader* tsx = device->getFileSystem()->createXMLReader(directory+ts.Source);
+						io::IXMLReader* tsx = device->getFileSystem()->createXMLReader(directory+ts.Source);
 						while (tsx->read())
 						{
 							if (tsx->getNodeType() == io::EXN_ELEMENT)
 							{
 								// Read Tileset information from .tsx file
-								if (stringc(tsx->getNodeName()) == "tileset")
+								if (core::stringc(tsx->getNodeName()) == "tileset")
 								{
 									ts.Name = tsx->getAttributeValue(L"name");
 									ts.Size.Width = tsx->getAttributeValueAsInt(L"tilewidth");
@@ -222,11 +234,11 @@ public:
 										if (tsx->getNodeType() == io::EXN_ELEMENT)
 										{
 											// Read Image information
-											if (stringc(tsx->getNodeName()) == "image")
+											if (core::stringc(tsx->getNodeName()) == "image")
 												ts.Image = readImages(tsx);
 
 											// Read Tile information
-											if (stringc(tsx->getNodeName()) == "tile")
+											if (core::stringc(tsx->getNodeName()) == "tile")
 											{
 												TILE tld;
 												tld.ID = tsx->getAttributeValueAsInt(L"id");
@@ -241,11 +253,11 @@ public:
 													if (tsx->getNodeType() == io::EXN_ELEMENT)
 													{
 														// Read Object Groups information
-														if (stringc(tsx->getNodeName()) == "objectgroup")
+														if (core::stringc(tsx->getNodeName()) == "objectgroup")
 															tld.ObjectGroup.push_back(readObjectGroups(tsx));
 
 														// Read Animations information
-														if (stringc(tsx->getNodeName()) == "animation")
+														if (core::stringc(tsx->getNodeName()) == "animation")
 														{
 															#if _DEBUG
 															printf("ANIMATION [*]\n\n");
@@ -256,7 +268,7 @@ public:
 																if (tsx->getNodeType() == io::EXN_ELEMENT)
 																{
 																	// Read Frames information
-																	if (stringc(tsx->getNodeName()) == "frame")
+																	if (core::stringc(tsx->getNodeName()) == "frame")
 																	{
 																		FRAME frm;
 
@@ -305,7 +317,7 @@ public:
 							// Read Image information
 							if (xml->getNodeType() == io::EXN_ELEMENT)
 							{
-								if (stringc(xml->getNodeName()) == "image")
+								if (core::stringc(xml->getNodeName()) == "image")
 									ts.Image = readImages(xml);
 							}
 							else
@@ -325,9 +337,9 @@ public:
 					#endif
 
 					// tiles/subrects are counted from 0, left to right, top to bottom
-					for (s32 y = 0; y < ts.TileCount/ts.Columns; ++y)
+					for (u32 y=0; y<ts.TileCount/ts.Columns; ++y)
 					{
-						for (s32 x = 0; x < ts.Columns; ++x)
+						for (u32 x=0; x<ts.Columns; ++x)
 							ts.SubRects.push_back(recti(vector2di(x * ts.Size.Width, y * ts.Size.Height), ts.Size));
 					}
 
@@ -335,19 +347,19 @@ public:
 				}
 
 				// Read Layer information
-				if (stringc(xml->getNodeName()) == "layer")
+				if (core::stringc(xml->getNodeName()) == "layer")
 					Layer.push_back(readLayers(xml));
 
 				// Read Object Groups information
-				if (stringc(xml->getNodeName()) == "objectgroup")
+				if (core::stringc(xml->getNodeName()) == "objectgroup")
 					ObjectGroup.push_back(readObjectGroups(xml));
 
 				// Read Image Layer information
-				if (stringc(xml->getNodeName()) == "imagelayer")
+				if (core::stringc(xml->getNodeName()) == "imagelayer")
 					ImageLayer.push_back(readImageLayers(xml));
 
 				// Read Group information
-				if (stringc(xml->getNodeName()) == "group")
+				if (core::stringc(xml->getNodeName()) == "group")
 					Group.push_back(readGroups(xml));
 			}
 		}
@@ -367,10 +379,10 @@ public:
 	}
 
 	// Variables
-	stringc Version;
-	stringc TiledVersion;
-	stringc Orientation;
-	stringc RenderOrder;
+	core::stringc Version;
+	core::stringc TiledVersion;
+	core::stringc Orientation;
+	core::stringc RenderOrder;
 
 	core::dimension2du Size;
 	core::dimension2du TileSize;
@@ -379,7 +391,7 @@ public:
 	s32 NextLayerID=0;
 	s32 NextObjectID=0;
 
-	SColor BackgroundColor;
+	video::SColor BackgroundColor;
 
 	core::array<PROPERTY>    Properties;
 	core::array<TILESET>     Tileset;
@@ -391,9 +403,9 @@ public:
 private:
 
 	// Convert from hex to rgb
-	SColor HEX2RGB(stringc value)
+	video::SColor HEX2RGB(core::stringc value)
 	{
-		SColor color(255, 255, 255, 255);
+		video::SColor color(255, 255, 255, 255);
 		value.remove("#");
 
 		if (!value.empty())
@@ -458,23 +470,23 @@ private:
 				if (xml->getNodeType() == io::EXN_ELEMENT)
 				{
 					// Read all Properties of map
-					if (stringc(xml->getNodeName()) == "properties")
+					if (core::stringc(xml->getNodeName()) == "properties")
 						grp.Properties = readProperties(xml);
 
 					// Read Layer information
-					if (stringc(xml->getNodeName()) == "layer")
+					if (core::stringc(xml->getNodeName()) == "layer")
 						Layer.push_back(readLayers(xml));
 
 					// Read Object Groups information
-					if (stringc(xml->getNodeName()) == "objectgroup")
+					if (core::stringc(xml->getNodeName()) == "objectgroup")
 						ObjectGroup.push_back(readObjectGroups(xml));
 
 					// Read Image Layer information
-					if (stringc(xml->getNodeName()) == "imagelayer")
+					if (core::stringc(xml->getNodeName()) == "imagelayer")
 						ImageLayer.push_back(readImageLayers(xml));
 
 					// Read Groups information
-					if (stringc(xml->getNodeName()) == "group")
+					if (core::stringc(xml->getNodeName()) == "group")
 						Group.push_back(readGroups(xml));
 				}
 			}
@@ -513,7 +525,7 @@ private:
 			if (xml->getNodeType() == io::EXN_ELEMENT)
 			{
 				// Read Data
-				if (stringc(xml->getNodeName()) == "data")
+				if (core::stringc(xml->getNodeName()) == "data")
 				{
 					lyr.Encoding = xml->getAttributeValue(L"encoding");
 
@@ -524,7 +536,7 @@ private:
 						{
 							if (xml->getNodeType() == io::EXN_ELEMENT)
 							{
-								if (stringc(xml->getNodeName()) == "tile")
+								if (core::stringc(xml->getNodeName()) == "tile")
 									lyr.Data.push_back(xml->getAttributeValueAsInt(L"gid"));
 							}
 							else
@@ -539,12 +551,12 @@ private:
 				}
 
 				// Read all Properties (if exist)
-				if (stringc(xml->getNodeName()) == "properties")
+				if (core::stringc(xml->getNodeName()) == "properties")
 					lyr.Properties = readProperties(xml);
 			}
 			else if (xml->getNodeType() == io::EXN_TEXT)
 			{
-				stringc data = xml->getNodeName();
+				core::stringc data = xml->getNodeName();
 
 				#if _DEBUG
 				printf("- Data: %s\n", data.c_str());
@@ -568,7 +580,7 @@ private:
 				// Read Base64 data
 				if (lyr.Encoding == "base64")
 				{
-					stringc out, in = data;
+					core::stringc out, in = data;
 					in.remove("\n");
 					in.remove("\r");
 					in.remove(" ");
@@ -616,7 +628,7 @@ private:
 		img.Size.Height = xml->getAttributeValueAsInt(L"height");
 
 		// Make color transparent
-		SColor col = HEX2RGB(xml->getAttributeValue(L"trans"));
+		video::SColor col = HEX2RGB(xml->getAttributeValue(L"trans"));
 		dev->getVideoDriver()->makeColorKeyTexture(img.Texture, col);
 
 		#if _DEBUG
@@ -631,14 +643,14 @@ private:
 	}
 
 	// Read all properties
-	array<PROPERTY> readProperties(io::IXMLReader* xml)
+	core::array<PROPERTY> readProperties(io::IXMLReader* xml)
 	{
-		array<PROPERTY> pro;
+		core::array<PROPERTY> pro;
 		while (xml->read())
 		{
 			if (xml->getNodeType() == io::EXN_ELEMENT)
 			{
-				if (stringc(xml->getNodeName()) == "property")
+				if (core::stringc(xml->getNodeName()) == "property")
 				{
 					PROPERTY pry;
 
@@ -740,11 +752,11 @@ private:
 				if (xml->getNodeType() == io::EXN_ELEMENT)
 				{
 					// Read all Properties
-					if (stringc(xml->getNodeName()) == "properties")
+					if (core::stringc(xml->getNodeName()) == "properties")
 						og.Properties = readProperties(xml);
 
 					// Read all objects
-					if (stringc(xml->getNodeName()) == "object")
+					if (core::stringc(xml->getNodeName()) == "object")
 					{
 						OBJECT obj;
 
@@ -774,25 +786,25 @@ private:
 							{
 								if (xml->getNodeType() == io::EXN_ELEMENT)
 								{
-									if (stringc(xml->getNodeName()) == "properties")
+									if (core::stringc(xml->getNodeName()) == "properties")
 										obj.Properties = readProperties(xml);
 
-									if (stringc(xml->getNodeName()) == "ellipse")
+									if (core::stringc(xml->getNodeName()) == "ellipse")
 										obj.Shape = SHAPE::S_ELLIPSE;
 
-									if (stringc(xml->getNodeName()) == "point")
+									if (core::stringc(xml->getNodeName()) == "point")
 										obj.Shape = SHAPE::S_POINT;
 
-									if (stringc(xml->getNodeName()) == "polygon")
+									if (core::stringc(xml->getNodeName()) == "polygon")
 									{
 										obj.Shape = SHAPE::S_POLYGON;
 
-										array<stringc> ac;
-										stringc(xml->getAttributeValue(L"points")).split(ac, " ", 4);
+										core::array<core::stringc> ac;
+										core::stringc(xml->getAttributeValue(L"points")).split(ac, " ", 4);
 
-										for (u32 x = 0; x < ac.size(); ++x)
+										for (u32 x=0; x<ac.size(); ++x)
 										{
-											vector2di pos;
+											core::vector2di pos;
 											sscanf_s(ac[x].c_str(), "%i,%i", &pos.X, &pos.Y);
 											obj.Points.push_back(pos);
 											#if _DEBUG
@@ -819,7 +831,7 @@ private:
 
 private:
 
-	stringc directory;
+	core::stringc directory;
 	irr::IrrlichtDevice* dev;
 
 };
