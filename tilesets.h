@@ -1,5 +1,6 @@
 /*********************************************************************
 Copyright (c) 2020-2022 TheMrCerebro
+themrcerebro@gmail.com
 
 irrTiled - Zlib license.
 
